@@ -34,9 +34,10 @@ pip install torch
 Install Hugging Face related packages:
 ```bash
 pip install transformers accelerate datasets
+```
 
-
-# Login your hugging face account:
+Login your hugging face account:
+```bash
 huggingface-cli login
 ```
 
@@ -70,7 +71,6 @@ lm-eval \
 --model hf \
 --model_args pretrained=meta-llama/Llama-2-7b-chat-hf,dtype=float16 \
 --tasks mmlu \
---device cuda:0 \
 --output_path evaluation_results
 ```
 
@@ -88,7 +88,6 @@ lm-eval \
 --model hf \
 --model_args pretrained=meta-llama/Llama-2-7b-chat-hf,dtype=float16 \
 --tasks mmlu \
---device cuda:0 \
 --output_path evaluation_results/exp1_baseline
 ```
 
@@ -106,29 +105,11 @@ lm-eval \
 --model hf \
 --model_args pretrained=meta-llama/Llama-2-7b-chat-hf,dtype=float16 \
 --tasks mmlu \
---device cuda:0 \
 --num_fewshot 5 \
 --output_path evaluation_results/exp2_5shot
 ```
 
 
-### Exp 2: Few-shot (k=5) Prompting
-
-
-This experiment evaluates the Basic Prompting Strategy 1.
-
-**Features:**
-* 5-shot prompting
-
-```bash
-lm-eval \
---model hf \
---model_args pretrained=meta-llama/Llama-2-7b-chat-hf,dtype=float16 \
---tasks mmlu \
---device cuda:0 \
---num_fewshot 5 \
---output_path evaluation_results/exp2_5shot
-```
 
 
 
