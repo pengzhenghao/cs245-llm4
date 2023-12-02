@@ -1,400 +1,198 @@
-from pprint import pprint
-from typing import List, Union
+import os
+import yaml
+from typing import List, Union, Dict
 
-import sacrebleu
-import lm_eval.base
+from lm_eval import utils
+from lm_eval import prompts
+from lm_eval.api.task import TaskConfig, Task, ConfigurableTask
+from lm_eval.api.registry import (
+    register_task,
+    register_group,
+    TASK_REGISTRY,
+    GROUP_REGISTRY,
+    ALL_TASKS,
+)
 
-from . import babi
-from . import superglue
-from . import glue
-from . import arc
-from . import coqa
-from . import race
-from . import webqs
-from . import anli
-from . import wsc273
-from . import winogrande
-from . import quac
-from . import hellaswag
-from . import swag
-from . import openbookqa
-from . import squad
-from . import naturalqs
-from . import nqopen
-from . import sat
-from . import arithmetic
-from . import lambada
-from . import piqa
-from . import prost
-from . import mc_taco
-from . import triviaqa
-from . import pubmedqa
-from . import sciq
-from . import qasper
-from . import qa4mre
-from . import translation
-from . import headqa
-from . import mathqa
-from . import hendrycks_ethics
-from . import drop
-from . import unscramble
-from . import logiqa
-from . import hendrycks_test
-from . import hendrycks_math
-from . import cbt
-from . import lambada_cloze
-from . import pile
-from . import wikitext
-from . import lambada_multilingual
-from . import mutual
-from . import truthfulqa
-from . import blimp
-from . import asdiv
-from . import gsm8k
-from . import storycloze
-from . import toxigen
-from . import crowspairs
-from . import json
-from . import xcopa
-from . import bigbench
-from . import xstorycloze
-from . import xwinograd
-from . import pawsx
-from . import xnli
-from . import mgsm
-from . import scrolls
-from . import ceval
-from . import csatqa
-from . import haerae
-from . import cmmlu
+import logging
 
-########################################
-# Translation tasks
-########################################
+# import python tasks
+from .squadv2.task import SQuAD2
+from .scrolls.task import (
+    QuALITY,
+    NarrativeQA,
+    ContractNLI,
+    GovReport,
+    SummScreenFD,
+    QMSum,
+)
 
-# 6 total
-gpt3_translation_benchmarks = {
-    "wmt14": ["en-fr", "fr-en"],  # French
-    "wmt16": ["en-ro", "ro-en", "de-en", "en-de"],  # German, Romanian
-}
+eval_logger = utils.eval_logger
 
 
-# 28 total
-selected_translation_benchmarks = {
-    **gpt3_translation_benchmarks,
-    "wmt20": sacrebleu.get_langpairs_for_testset("wmt20"),
-    "iwslt17": ["en-ar", "ar-en"],  # Arabic
-}
+def register_configurable_task(config: Dict[str, str]) -> int:
+    SubClass = type(
+        config["task"] + "ConfigurableTask",
+        (ConfigurableTask,),
+        {"CONFIG": TaskConfig(**config)},
+    )
 
-# 319 total
-all_translation_benchmarks = {
-    ts: sacrebleu.get_langpairs_for_testset(ts)
-    for ts in sacrebleu.get_available_testsets()
-}
+    if "task" in config:
+        task_name = "{}".format(config["task"])
+        register_task(task_name)(SubClass)
 
+    if "group" in config:
+        if config["group"] == config["task"]:
+            raise ValueError("task and group name cannot be the same")
+        elif type(config["group"]) == str:
+            group_name = [config["group"]]
+        else:
+            group_name = config["group"]
 
-########################################
-# All tasks
-########################################
+        for group in group_name:
+            register_group(group)(SubClass)
 
-
-TASK_REGISTRY = {
-    "babi": babi.Babi,
-    # GLUE
-    "cola": glue.CoLA,
-    "mnli": glue.MNLI,
-    "mnli_mismatched": glue.MNLIMismatched,
-    "mrpc": glue.MRPC,
-    "rte": glue.RTE,
-    "qnli": glue.QNLI,
-    "qqp": glue.QQP,
-    # "stsb": glue.STSB, # not implemented yet
-    "sst": glue.SST,
-    "wnli": glue.WNLI,
-    # SuperGLUE
-    "boolq": superglue.BoolQ,
-    "cb": superglue.CommitmentBank,
-    "copa": superglue.Copa,
-    "multirc": superglue.MultiRC,
-    "record": superglue.ReCoRD,
-    "wic": superglue.WordsInContext,
-    "wsc": superglue.SGWinogradSchemaChallenge,
-    # Order by benchmark/genre?
-    "coqa": coqa.CoQA,
-    "drop": drop.DROP,
-    "lambada_openai": lambada.LambadaOpenAI,
-    "lambada_standard": lambada.LambadaStandard,
-    "lambada_openai_cloze": lambada_cloze.LambadaOpenAICloze,
-    "lambada_standard_cloze": lambada_cloze.LambadaStandardCloze,
-    # multilingual lambada
-    **lambada_multilingual.construct_tasks(),
-    "wikitext": wikitext.WikiText,
-    # "cbt-cn": cbt.CBTCN, # disabled pending context length fix
-    # "cbt-ne": cbt.CBTNE, # disabled pending context length fix
-    "piqa": piqa.PiQA,
-    "prost": prost.PROST,
-    "mc_taco": mc_taco.MCTACO,
-    # Science related
-    "pubmedqa": pubmedqa.Pubmed_QA,
-    "sciq": sciq.SciQ,
-    "qasper": qasper.QASPER,
-    "qa4mre_2011": qa4mre.QA4MRE_2011,
-    "qa4mre_2012": qa4mre.QA4MRE_2012,
-    "qa4mre_2013": qa4mre.QA4MRE_2013,
-    "triviaqa": triviaqa.TriviaQA,
-    "arc_easy": arc.ARCEasy,
-    "arc_challenge": arc.ARCChallenge,
-    # "quac": quac.QuAC, # not implemented yet
-    "logiqa": logiqa.LogiQA,
-    "hellaswag": hellaswag.HellaSwag,
-    "swag": swag.SWAG,
-    "openbookqa": openbookqa.OpenBookQA,
-    "squad2": squad.SQuAD2,
-    "race": race.RACE,
-    # "naturalqs": naturalqs.NaturalQs, # not implemented yet
-    "nq_open": nqopen.NQOpen,
-    "headqa": headqa.HeadQAEsDeprecated,  # for backwards compat - headqa used to default to es
-    "headqa_es": headqa.HeadQAEs,
-    "headqa_en": headqa.HeadQAEn,
-    "mathqa": mathqa.MathQA,
-    "webqs": webqs.WebQs,
-    "wsc273": wsc273.WinogradSchemaChallenge273,
-    "winogrande": winogrande.Winogrande,
-    "anli_r1": anli.ANLIRound1,
-    "anli_r2": anli.ANLIRound2,
-    "anli_r3": anli.ANLIRound3,
-    "ethics_cm": hendrycks_ethics.EthicsCM,
-    "ethics_deontology": hendrycks_ethics.EthicsDeontology,
-    "ethics_justice": hendrycks_ethics.EthicsJustice,
-    "ethics_utilitarianism_original": hendrycks_ethics.EthicsUtilitarianismOriginal,
-    "ethics_utilitarianism": hendrycks_ethics.EthicsUtilitarianism,
-    "ethics_virtue": hendrycks_ethics.EthicsVirtue,
-    "truthfulqa_mc": truthfulqa.TruthfulQAMultipleChoice,
-    "truthfulqa_gen": truthfulqa.TruthfulQAGeneration,
-    # dialogue
-    "mutual": mutual.MuTual,
-    "mutual_plus": mutual.MuTualPlus,
-    # math
-    "math_algebra": hendrycks_math.MathAlgebra,
-    "math_counting_and_prob": hendrycks_math.MathCountingAndProbability,
-    "math_geometry": hendrycks_math.MathGeometry,
-    "math_intermediate_algebra": hendrycks_math.MathIntermediateAlgebra,
-    "math_num_theory": hendrycks_math.MathNumberTheory,
-    "math_prealgebra": hendrycks_math.MathPrealgebra,
-    "math_precalc": hendrycks_math.MathPrecalculus,
-    "math_asdiv": asdiv.Asdiv,
-    "gsm8k": gsm8k.GradeSchoolMath8K,
-    # arithmetic
-    "arithmetic_2da": arithmetic.Arithmetic2DPlus,
-    "arithmetic_2ds": arithmetic.Arithmetic2DMinus,
-    "arithmetic_3da": arithmetic.Arithmetic3DPlus,
-    "arithmetic_3ds": arithmetic.Arithmetic3DMinus,
-    "arithmetic_4da": arithmetic.Arithmetic4DPlus,
-    "arithmetic_4ds": arithmetic.Arithmetic4DMinus,
-    "arithmetic_5da": arithmetic.Arithmetic5DPlus,
-    "arithmetic_5ds": arithmetic.Arithmetic5DMinus,
-    "arithmetic_2dm": arithmetic.Arithmetic2DMultiplication,
-    "arithmetic_1dc": arithmetic.Arithmetic1DComposite,
-    # TODO Perhaps make these groups of tasks
-    #   e.g. anli, arithmetic, openai_translations, harness_translations
-    # hendrycksTest (57 tasks)
-    **hendrycks_test.create_all_tasks(),
-    # e.g. wmt14-fr-en
-    **translation.create_tasks_from_benchmarks(gpt3_translation_benchmarks),
-    # chef's selection, mostly wmt20
-    **translation.create_tasks_from_benchmarks(selected_translation_benchmarks),
-    # Word Scrambling and Manipulation Tasks
-    "anagrams1": unscramble.Anagrams1,
-    "anagrams2": unscramble.Anagrams2,
-    "cycle_letters": unscramble.CycleLetters,
-    "random_insertion": unscramble.RandomInsertion,
-    "reversed_words": unscramble.ReversedWords,
-    # Pile
-    "pile_arxiv": pile.PileArxiv,
-    "pile_books3": pile.PileBooks3,
-    "pile_bookcorpus2": pile.PileBookCorpus2,
-    "pile_dm-mathematics": pile.PileDmMathematics,
-    "pile_enron": pile.PileEnron,
-    "pile_europarl": pile.PileEuroparl,
-    "pile_freelaw": pile.PileFreeLaw,
-    "pile_github": pile.PileGithub,
-    "pile_gutenberg": pile.PileGutenberg,
-    "pile_hackernews": pile.PileHackernews,
-    "pile_nih-exporter": pile.PileNIHExporter,
-    "pile_opensubtitles": pile.PileOpenSubtitles,
-    "pile_openwebtext2": pile.PileOpenWebText2,
-    "pile_philpapers": pile.PilePhilPapers,
-    "pile_pile-cc": pile.PilePileCc,
-    "pile_pubmed-abstracts": pile.PilePubmedAbstracts,
-    "pile_pubmed-central": pile.PilePubmedCentral,
-    "pile_stackexchange": pile.PileStackExchange,
-    "pile_uspto": pile.PileUspto,
-    "pile_ubuntu-irc": pile.PileUbuntuIrc,
-    "pile_wikipedia": pile.PileWikipedia,
-    "pile_youtubesubtitles": pile.PileYoutubeSubtitles,
-    # BLiMP
-    "blimp_adjunct_island": blimp.BlimpAdjunctIsland,
-    "blimp_anaphor_gender_agreement": blimp.BlimpAnaphorGenderAgreement,
-    "blimp_anaphor_number_agreement": blimp.BlimpAnaphorNumberAgreement,
-    "blimp_animate_subject_passive": blimp.BlimpAnimateSubjectPassive,
-    "blimp_animate_subject_trans": blimp.BlimpAnimateSubjectTrans,
-    "blimp_causative": blimp.BlimpCausative,
-    "blimp_complex_NP_island": blimp.BlimpComplex_NPIsland,
-    "blimp_coordinate_structure_constraint_complex_left_branch": blimp.BlimpCoordinateStructureConstraintComplexLeftBranch,
-    "blimp_coordinate_structure_constraint_object_extraction": blimp.BlimpCoordinateStructureConstraintObjectExtraction,
-    "blimp_determiner_noun_agreement_1": blimp.BlimpDeterminerNounAgreement_1,
-    "blimp_determiner_noun_agreement_2": blimp.BlimpDeterminerNounAgreement_2,
-    "blimp_determiner_noun_agreement_irregular_1": blimp.BlimpDeterminerNounAgreementIrregular_1,
-    "blimp_determiner_noun_agreement_irregular_2": blimp.BlimpDeterminerNounAgreementIrregular_2,
-    "blimp_determiner_noun_agreement_with_adj_2": blimp.BlimpDeterminerNounAgreementWithAdj_2,
-    "blimp_determiner_noun_agreement_with_adj_irregular_1": blimp.BlimpDeterminerNounAgreementWithAdjIrregular_1,
-    "blimp_determiner_noun_agreement_with_adj_irregular_2": blimp.BlimpDeterminerNounAgreementWithAdjIrregular_2,
-    "blimp_determiner_noun_agreement_with_adjective_1": blimp.BlimpDeterminerNounAgreementWithAdjective_1,
-    "blimp_distractor_agreement_relational_noun": blimp.BlimpDistractorAgreementRelationalNoun,
-    "blimp_distractor_agreement_relative_clause": blimp.BlimpDistractorAgreementRelativeClause,
-    "blimp_drop_argument": blimp.BlimpDropArgument,
-    "blimp_ellipsis_n_bar_1": blimp.BlimpEllipsisNBar_1,
-    "blimp_ellipsis_n_bar_2": blimp.BlimpEllipsisNBar_2,
-    "blimp_existential_there_object_raising": blimp.BlimpExistentialThereObjectRaising,
-    "blimp_existential_there_quantifiers_1": blimp.BlimpExistentialThereQuantifiers_1,
-    "blimp_existential_there_quantifiers_2": blimp.BlimpExistentialThereQuantifiers_2,
-    "blimp_existential_there_subject_raising": blimp.BlimpExistentialThereSubjectRaising,
-    "blimp_expletive_it_object_raising": blimp.BlimpExpletiveItObjectRaising,
-    "blimp_inchoative": blimp.BlimpInchoative,
-    "blimp_intransitive": blimp.BlimpIntransitive,
-    "blimp_irregular_past_participle_adjectives": blimp.BlimpIrregularPastParticipleAdjectives,
-    "blimp_irregular_past_participle_verbs": blimp.BlimpIrregularPastParticipleVerbs,
-    "blimp_irregular_plural_subject_verb_agreement_1": blimp.BlimpIrregularPluralSubjectVerbAgreement_1,
-    "blimp_irregular_plural_subject_verb_agreement_2": blimp.BlimpIrregularPluralSubjectVerbAgreement_2,
-    "blimp_left_branch_island_echo_question": blimp.BlimpLeftBranchIslandEchoQuestion,
-    "blimp_left_branch_island_simple_question": blimp.BlimpLeftBranchIslandSimpleQuestion,
-    "blimp_matrix_question_npi_licensor_present": blimp.BlimpMatrixQuestionNpiLicensorPresent,
-    "blimp_npi_present_1": blimp.BlimpNpiPresent_1,
-    "blimp_npi_present_2": blimp.BlimpNpiPresent_2,
-    "blimp_only_npi_licensor_present": blimp.BlimpOnlyNpiLicensorPresent,
-    "blimp_only_npi_scope": blimp.BlimpOnlyNpiScope,
-    "blimp_passive_1": blimp.BlimpPassive_1,
-    "blimp_passive_2": blimp.BlimpPassive_2,
-    "blimp_principle_A_c_command": blimp.BlimpPrinciple_ACCommand,
-    "blimp_principle_A_case_1": blimp.BlimpPrinciple_ACase_1,
-    "blimp_principle_A_case_2": blimp.BlimpPrinciple_ACase_2,
-    "blimp_principle_A_domain_1": blimp.BlimpPrinciple_ADomain_1,
-    "blimp_principle_A_domain_2": blimp.BlimpPrinciple_ADomain_2,
-    "blimp_principle_A_domain_3": blimp.BlimpPrinciple_ADomain_3,
-    "blimp_principle_A_reconstruction": blimp.BlimpPrinciple_AReconstruction,
-    "blimp_regular_plural_subject_verb_agreement_1": blimp.BlimpRegularPluralSubjectVerbAgreement_1,
-    "blimp_regular_plural_subject_verb_agreement_2": blimp.BlimpRegularPluralSubjectVerbAgreement_2,
-    "blimp_sentential_negation_npi_licensor_present": blimp.BlimpSententialNegationNpiLicensorPresent,
-    "blimp_sentential_negation_npi_scope": blimp.BlimpSententialNegationNpiScope,
-    "blimp_sentential_subject_island": blimp.BlimpSententialSubjectIsland,
-    "blimp_superlative_quantifiers_1": blimp.BlimpSuperlativeQuantifiers_1,
-    "blimp_superlative_quantifiers_2": blimp.BlimpSuperlativeQuantifiers_2,
-    "blimp_tough_vs_raising_1": blimp.BlimpToughVsRaising_1,
-    "blimp_tough_vs_raising_2": blimp.BlimpToughVsRaising_2,
-    "blimp_transitive": blimp.BlimpTransitive,
-    "blimp_wh_island": blimp.BlimpWhIsland,
-    "blimp_wh_questions_object_gap": blimp.BlimpWhQuestionsObjectGap,
-    "blimp_wh_questions_subject_gap": blimp.BlimpWhQuestionsSubjectGap,
-    "blimp_wh_questions_subject_gap_long_distance": blimp.BlimpWhQuestionsSubjectGapLongDistance,
-    "blimp_wh_vs_that_no_gap": blimp.BlimpWhVsThatNoGap,
-    "blimp_wh_vs_that_no_gap_long_distance": blimp.BlimpWhVsThatNoGapLongDistance,
-    "blimp_wh_vs_that_with_gap": blimp.BlimpWhVsThatWithGap,
-    "blimp_wh_vs_that_with_gap_long_distance": blimp.BlimpWhVsThatWithGapLongDistance,
-    "toxigen": toxigen.ToxiGen,
-    "crows_pairs_english": crowspairs.CrowsPairsEnglish,
-    "crows_pairs_english_race_color": crowspairs.CrowsPairsEnglishRaceColor,
-    "crows_pairs_english_socioeconomic": crowspairs.CrowsPairsEnglishSocioeconomic,
-    "crows_pairs_english_gender": crowspairs.CrowsPairsEnglishGender,
-    "crows_pairs_english_age": crowspairs.CrowsPairsEnglishAge,
-    "crows_pairs_english_religion": crowspairs.CrowsPairsEnglishReligion,
-    "crows_pairs_english_disability": crowspairs.CrowsPairsEnglishDisability,
-    "crows_pairs_english_sexual_orientation": crowspairs.CrowsPairsEnglishSexualOrientation,
-    "crows_pairs_english_nationality": crowspairs.CrowsPairsEnglishNationality,
-    "crows_pairs_english_physical_appearance": crowspairs.CrowsPairsEnglishPhysicalAppearance,
-    "crows_pairs_english_autre": crowspairs.CrowsPairsEnglishAutre,
-    "crows_pairs_french": crowspairs.CrowsPairsFrench,
-    "crows_pairs_french_race_color": crowspairs.CrowsPairsFrenchRaceColor,
-    "crows_pairs_french_socioeconomic": crowspairs.CrowsPairsFrenchSocioeconomic,
-    "crows_pairs_french_gender": crowspairs.CrowsPairsFrenchGender,
-    "crows_pairs_french_age": crowspairs.CrowsPairsFrenchAge,
-    "crows_pairs_french_religion": crowspairs.CrowsPairsFrenchReligion,
-    "crows_pairs_french_disability": crowspairs.CrowsPairsFrenchDisability,
-    "crows_pairs_french_sexual_orientation": crowspairs.CrowsPairsFrenchSexualOrientation,
-    "crows_pairs_french_nationality": crowspairs.CrowsPairsFrenchNationality,
-    "crows_pairs_french_physical_appearance": crowspairs.CrowsPairsFrenchPhysicalAppearance,
-    "crows_pairs_french_autre": crowspairs.CrowsPairsFrenchAutre,
-    "csatqa_wr": csatqa.WR,
-    "csatqa_gr": csatqa.GR,
-    "csatqa_rcs": csatqa.RCS,
-    "csatqa_rcss": csatqa.RCSS,
-    "csatqa_rch": csatqa.RCH,
-    "csatqa_li": csatqa.LI,
-    "haerae_hi": haerae.HI,
-    "haerae_kgk": haerae.KGK,
-    "haerae_lw": haerae.LW,
-    "haerae_rc": haerae.RC,
-    "haerae_rw": haerae.RW,
-    "haerae_sn": haerae.SN,
-    # Requires manual download
-    # Requires manual download of data.
-    # "storycloze_2016": storycloze.StoryCloze2016,
-    # "storycloze_2018": storycloze.StoryCloze2018,
-    # "sat": sat.SATAnalogies,
-    **xcopa.construct_tasks(),
-    **bigbench.create_all_tasks(),
-    **xstorycloze.create_all_tasks(),
-    **xwinograd.create_all_tasks(),
-    **pawsx.construct_tasks(),
-    **xnli.construct_tasks(),
-    **mgsm.construct_tasks(),
-    **scrolls.construct_tasks(),
-    **ceval.create_all_tasks(),
-    **cmmlu.create_all_tasks()
-}
+    return 0
 
 
-ALL_TASKS = sorted(list(TASK_REGISTRY))
+def register_configurable_group(config: Dict[str, str], yaml_path: str = None) -> int:
+    group = config["group"]
+    all_task_list = config["task"]
+    config_list = [task for task in all_task_list if type(task) != str]
+    task_list = [task for task in all_task_list if type(task) == str]
 
-_EXAMPLE_JSON_PATH = "split:key:/absolute/path/to/data.json"
+    for task_config in config_list:
+        task_config = utils.load_yaml_config(yaml_path, task_config)
+        var_configs = check_prompt_config(
+            {
+                **task_config,
+                **{"group": group},
+            },
+            yaml_path=os.path.dirname(yaml_path),
+        )
+        for config in var_configs:
+            register_configurable_task(config)
+
+    task_names = utils.pattern_match(task_list, ALL_TASKS)
+    for task in task_names:
+        if (task in TASK_REGISTRY) or (task in GROUP_REGISTRY):
+            if group in GROUP_REGISTRY:
+                GROUP_REGISTRY[group].append(task)
+            else:
+                GROUP_REGISTRY[group] = [task]
+                ALL_TASKS.add(group)
+
+    return 0
 
 
-def add_json_task(task_name):
-    """Add a JSON perplexity task if the given task name matches the
-    JSON task specification.
+def check_prompt_config(
+    config: Dict[str, str], yaml_path: str = None
+) -> List[Dict[str, str]]:
+    all_configs = []
+    if "use_prompt" in config:
+        prompt_list = prompts.load_prompt_list(
+            use_prompt=config["use_prompt"],
+            dataset_name=config["dataset_path"],
+            subset_name=config["dataset_name"] if "dataset_name" in config else None,
+            yaml_path=yaml_path,
+        )
+        for idx, prompt_variation in enumerate(prompt_list):
+            all_configs.append(
+                {
+                    **config,
+                    **{"use_prompt": prompt_variation},
+                    **{
+                        "task": "_".join(
+                            [
+                                config["task"]
+                                if "task" in config
+                                else get_task_name_from_config(config),
+                                prompt_variation.split("/")[-1]
+                                if ".yaml" in prompt_variation
+                                else prompt_variation,
+                            ]
+                        )
+                    },
+                    **{"output_type": "generate_until"},
+                }
+            )
+    else:
+        all_configs.append(config)
+    return all_configs
 
-    See `json.JsonPerplexity`.
+
+def get_task_name_from_config(task_config: Dict[str, str]) -> str:
+    if "dataset_name" in task_config:
+        return "{dataset_path}_{dataset_name}".format(**task_config)
+    else:
+        return "{dataset_path}".format(**task_config)
+
+
+def include_task_folder(task_dir: str, register_task: bool = True) -> None:
     """
-    if not task_name.startswith("json"):
-        return
+    Calling this function
+    """
+    for root, subdirs, file_list in os.walk(task_dir):
+        # if (subdirs == [] or subdirs == ["__pycache__"]) and (len(file_list) > 0):
+        for f in file_list:
+            if f.endswith(".yaml"):
+                yaml_path = os.path.join(root, f)
+                try:
+                    config = utils.load_yaml_config(yaml_path)
 
-    def create_json_task():
-        splits = task_name.split("=", 1)
-        if len(splits) != 2 or not splits[1]:
-            raise ValueError(
-                "json tasks need a path argument pointing to the local "
-                "dataset, specified like this: json="
-                + _EXAMPLE_JSON_PATH
-                + ' (if there are no splits, use "train")'
-            )
+                    if "task" not in config:
+                        continue
 
-        json_path = splits[1]
-        if json_path == _EXAMPLE_JSON_PATH:
-            raise ValueError(
-                "please do not copy the example path directly, but substitute "
-                "it with a path to your local dataset"
-            )
-        return lambda: json.JsonPerplexity(json_path)
+                    all_configs = check_prompt_config(
+                        config, yaml_path=os.path.dirname(yaml_path)
+                    )
+                    for config in all_configs:
+                        if register_task:
+                            if type(config["task"]) == str:
+                                register_configurable_task(config)
+                        else:
+                            if type(config["task"]) == list:
+                                register_configurable_group(config, yaml_path)
 
-    TASK_REGISTRY[task_name] = create_json_task()
+                # Log this silently and show it only when
+                # the user defines the appropriate verbosity.
+                except ModuleNotFoundError as e:
+                    eval_logger.debug(
+                        f"{yaml_path}: {e}. Config will not be added to registry."
+                    )
+                except Exception as error:
+                    import traceback
+
+                    eval_logger.debug(
+                        "Failed to load config in\n"
+                        f"                                 {yaml_path}\n"
+                        "                                 Config will not be added to registry\n"
+                        f"                                 Error: {error}\n"
+                        f"                                 Traceback: {traceback.format_exc()}"
+                    )
+    return 0
 
 
-def get_task(task_name):
+def include_path(task_dir):
+    include_task_folder(task_dir)
+    # Register Benchmarks after all tasks have been added
+    include_task_folder(task_dir, register_task=False)
+    return 0
+
+
+def initialize_tasks(verbosity="INFO"):
+
+    eval_logger.setLevel(getattr(logging, f"{verbosity}"))
+
+    task_dir = os.path.dirname(os.path.abspath(__file__)) + "/"
+    include_path(task_dir)
+
+
+def get_task(task_name, config):
     try:
-        add_json_task(task_name)
-        return TASK_REGISTRY[task_name]
+        return TASK_REGISTRY[task_name](config=config)
     except KeyError:
-        print("Available tasks:")
-        pprint(TASK_REGISTRY)
+        eval_logger.info("Available tasks:")
+        eval_logger.info(list(TASK_REGISTRY) + list(GROUP_REGISTRY))
         raise KeyError(f"Missing task {task_name}")
 
 
@@ -403,6 +201,7 @@ def get_task_name_from_object(task_object):
         if class_ is task_object:
             return name
 
+    # TODO: scrap this
     # this gives a mechanism for non-registered tasks to have a custom name anyways when reporting
     return (
         task_object.EVAL_HARNESS_NAME
@@ -411,16 +210,66 @@ def get_task_name_from_object(task_object):
     )
 
 
-def get_task_dict(task_name_list: List[Union[str, lm_eval.base.Task]]):
-    task_name_dict = {
-        task_name: get_task(task_name)()
-        for task_name in task_name_list
-        if isinstance(task_name, str)
+# TODO: pass num_fewshot and other cmdline overrides in a better way
+def get_task_dict(task_name_list: List[Union[str, Dict, Task]], **kwargs):
+    config = {**kwargs}
+
+    task_name_from_registry_dict = {}
+    task_name_from_config_dict = {}
+    task_name_from_object_dict = {}
+
+    if type(task_name_list) != list:
+        task_name_list = [task_name_list]
+
+    for task_element in task_name_list:
+        if isinstance(task_element, str):
+            if task_element in GROUP_REGISTRY:
+                group_name = task_element
+                for task_name in GROUP_REGISTRY[task_element]:
+                    if task_name not in task_name_from_registry_dict:
+                        task_obj = get_task_dict(task_name)
+                        if task_name in task_obj.keys():
+                            task_dict = {
+                                task_name: (group_name, task_obj[task_name]),
+                            }
+                        else:
+                            task_dict = {
+                                task_name: (group_name, None),
+                                **task_obj,
+                            }
+
+                        task_name_from_registry_dict = {
+                            **task_name_from_registry_dict,
+                            **task_dict,
+                        }
+            else:
+                task_name = task_element
+                if task_name not in task_name_from_registry_dict:
+                    task_name_from_registry_dict = {
+                        **task_name_from_registry_dict,
+                        task_name: get_task(task_name=task_element, config=config),
+                    }
+
+        elif isinstance(task_element, dict):
+            task_element.update(config)
+            task_name_from_config_dict = {
+                **task_name_from_config_dict,
+                get_task_name_from_config(task_element): ConfigurableTask(
+                    config=task_element
+                ),
+            }
+
+        elif isinstance(task_element, Task):
+            task_name_from_object_dict = {
+                **task_name_from_object_dict,
+                get_task_name_from_object(task_element): task_element,
+            }
+
+    assert set(task_name_from_registry_dict.keys()).isdisjoint(
+        set(task_name_from_object_dict.keys())
+    )
+    return {
+        **task_name_from_registry_dict,
+        **task_name_from_config_dict,
+        **task_name_from_object_dict,
     }
-    task_name_from_object_dict = {
-        get_task_name_from_object(task_object): task_object
-        for task_object in task_name_list
-        if not isinstance(task_object, str)
-    }
-    assert set(task_name_dict.keys()).isdisjoint(set(task_name_from_object_dict.keys()))
-    return {**task_name_dict, **task_name_from_object_dict}

@@ -66,10 +66,10 @@ By running the following script, we:
 ```bash
 cd cs245-llm/
 
-python main.py \
+lm-eval \
 --model hf \
 --model_args pretrained=meta-llama/Llama-2-7b-chat-hf,dtype=float16 \
---tasks hendrycksTest-* \
+--tasks mmlu \
 --device cuda:0
 ```
 
