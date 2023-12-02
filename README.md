@@ -1,9 +1,13 @@
-# CS245 Project for LLM4
+# LLM4: The Impact of Prompting Strategies
+
+This repo contains the code to reproduce our experiments for the project LLM4 in the 
+COM SCI 245 Big Data Analysis 2023 Fall at UCLA.
+
 
 Members:
-* Zhenghao Peng (105951555)
-* Haoting Ni (905545789)
-* Shihao Yang (205945583)
+* Zhenghao Peng
+* Haoting Ni
+* Shihao Yang
 
 
 ## Getting started
@@ -42,15 +46,11 @@ huggingface-cli login
 ```
 
 > [!NOTE]
-> You might need to create a [hugging face](https://huggingface.co/) account and [generate](https://huggingface.co/settings/tokens) a read token:
-> ![](figs/hf-token.png)
-
+> You might need to create a [hugging face](https://huggingface.co/) account and [generate](https://huggingface.co/settings/tokens) a read token.
 
 ### Install this repo itself
 
-
-Our project modifies the code from https://github.com/EleutherAI/lm-evaluation-harness
-To install this repo, please use:
+To install this repo, please run:
 ```bash
 cd cs245-llm4/
 
@@ -63,15 +63,14 @@ pip install -e .
 > The below scripts launch experiment with `accelerate launch -m lm-eval --model ...` for multi-GPUs acceleration.
 > If you want to run in single GPU, use `lm-eval --model ...` instead.
 
+Note that running the following script, we will (1) download the LLaMA-2 model, (2) download the MMLU datasets and (3) evaluate the LLaMA-2-7b model in the MMLU dataset.
+
+
 
 ### Exp 1: Baseline experiments
 
 **Features:**
 * Zero-shot prompting
-
-> [!NOTE]
-> By running the following script, we: 1) download the LLaMA-2 model, 2) download the MMLU datasets and 3) evaluate the LLaMA-2-7b model in the MMLU dataset.
-
 
 ```bash
 accelerate launch -m lm_eval \
@@ -202,3 +201,8 @@ python lm_eval/__main__.py \
 # Add other flags here to debug different experiments
 ```
 
+## Reference
+
+
+* Our project modifies the code from: https://github.com/EleutherAI/lm-evaluation-harness
+* The LLM we use is from: https://huggingface.co/meta-llama/Llama-2-7b-chat-hf
