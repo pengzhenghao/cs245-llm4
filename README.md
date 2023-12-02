@@ -3,7 +3,7 @@
 Members:
 * Zhenghao Peng (105951555)
 * Haoting Ni (905545789)
-*
+* Shihao Yang (205945583)
 
 
 ## Getting started
