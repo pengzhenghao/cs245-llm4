@@ -12,10 +12,20 @@ pipeline = transformers.pipeline(
     device_map="auto",
 )
 
-# pretrained=meta-llama/Llama-2-7b-chat-hf,dtype=float16
+text = """
+The following are multiple choice questions (with answers) about philosophy.
+
+Aesthetics deals with objects that are_____.
+A. essential to our existence
+B. unimportant to most people
+C. not essential to our existence
+D. rarely viewed
+
+Let's think step by step.
+"""
 
 sequences = pipeline(
-    'I liked "Breaking Bad" and "Band of Brothers". Do you have any recommendations of other shows I might like?\n',
+    text,
     do_sample=True,
     top_k=10,
     num_return_sequences=1,
