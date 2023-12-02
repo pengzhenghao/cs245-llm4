@@ -70,7 +70,8 @@ lm-eval \
 --model hf \
 --model_args pretrained=meta-llama/Llama-2-7b-chat-hf,dtype=float16 \
 --tasks mmlu \
---device cuda:0
+--device cuda:0 \
+--output_path evaluation_results
 ```
 
 
