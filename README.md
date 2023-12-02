@@ -21,7 +21,6 @@ conda activate llm4
 
 ### Install dependencies
 
-
 Install Pytorch first:
 ```bash
 pip install torch
@@ -44,6 +43,35 @@ huggingface-cli login
 > [!NOTE]
 > You might need to create a [hugging face](https://huggingface.co/) account and [generate](https://huggingface.co/settings/tokens) a read token:
 > ![](figs/hf-token.png)
+
+
+### Install this repo itself
+
+
+Our project modifies the code from https://github.com/EleutherAI/lm-evaluation-harness
+To install this repo, please use:
+```bash
+cd cs245-llm4/
+
+pip install -e .
+```
+
+## The first evaluation! Evaluate baseline model on MMLU
+
+By running the following script, we:
+1. download the LLaMA-2 model, 
+2. download the MMLU datasets and 
+3. evaluate the LLaMA-2-7b model in the MMLU dataset
+
+```bash
+cd cs245-llm/
+
+python main.py \
+--model hf \
+--model_args pretrained=meta-llama/Llama-2-7b-chat-hf,dtype=float16 \
+--tasks hendrycksTest-* \
+--device cuda:0
+```
 
 
 ## FAQ
