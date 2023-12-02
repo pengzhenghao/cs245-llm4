@@ -75,6 +75,64 @@ lm-eval \
 ```
 
 
+## Experiments
+
+
+### Exp 1: Baseline experiments
+
+**Features:**
+* Zero-shot prompting
+
+```bash
+lm-eval \
+--model hf \
+--model_args pretrained=meta-llama/Llama-2-7b-chat-hf,dtype=float16 \
+--tasks mmlu \
+--device cuda:0 \
+--output_path evaluation_results/exp1_baseline
+```
+
+
+### Exp 2: Few-shot (k=5) Prompting
+
+
+This experiment evaluates the Basic Prompting Strategy 1.
+
+**Features:**
+* 5-shot prompting
+
+```bash
+lm-eval \
+--model hf \
+--model_args pretrained=meta-llama/Llama-2-7b-chat-hf,dtype=float16 \
+--tasks mmlu \
+--device cuda:0 \
+--num_fewshot 5 \
+--output_path evaluation_results/exp2_5shot
+```
+
+
+### Exp 2: Few-shot (k=5) Prompting
+
+
+This experiment evaluates the Basic Prompting Strategy 1.
+
+**Features:**
+* 5-shot prompting
+
+```bash
+lm-eval \
+--model hf \
+--model_args pretrained=meta-llama/Llama-2-7b-chat-hf,dtype=float16 \
+--tasks mmlu \
+--device cuda:0 \
+--num_fewshot 5 \
+--output_path evaluation_results/exp2_5shot
+```
+
+
+
+
 ## FAQ
 
 
