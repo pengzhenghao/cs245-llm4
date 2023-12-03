@@ -105,8 +105,6 @@ Answer:
 ### Exp 2: Few-shot (k=3, 5) Prompting
 
 
-This experiment evaluates the Basic Prompting Strategy 1.
-
 **Features:**
 * 3-shot and 5-shot prompting
 
@@ -181,6 +179,17 @@ Answer:
 
 
 ### Exp 2B: Task-agnostic Few-shot Prompting
+
+**Features:**
+* 3-shot and 5-shot prompting
+
+```bash
+accelerate launch -m lm_eval \
+--model hf \
+--model_args pretrained=meta-llama/Llama-2-7b-chat-hf,dtype=float16 \
+--tasks mmlu_flan_cot_fewshot_global \
+--output_path evaluation_results/exp2_taskagnostic_fewshot
+```
 
 <details>
 <summary><b>Example Prompt:</b></summary>
