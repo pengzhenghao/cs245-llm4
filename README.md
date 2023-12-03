@@ -206,6 +206,33 @@ A: Let's think step by step.
 
 
 
+
+
+### Exp 3B: Zero-shot Chain-of-Thoughts Prompting with Additional Instruction
+
+```bash
+accelerate launch -m lm_eval \
+--model hf \
+--model_args pretrained=meta-llama/Llama-2-7b-chat-hf,dtype=float16 \
+--tasks mmlu_flan_cot_zeroshot_addoutputformat \
+--output_path evaluation_results/exp3_0shot_cot_addoutputformat
+```
+
+
+<details>
+<summary><b>Example Prompt:</b></summary>
+
+```plain
+The following are multiple choice questions (with answers) about anatomy. You will analyze the problem and each choice. You should end your answer by the sentence 'The answer is (X).' where you should replace 'X' in the sentence by 'A', 'B', 'C', or 'D' indicating your choice.
+
+Q: Which of the following terms describes the body's ability to maintain its normal state?
+(A) Anabolism (B) Catabolism (C) Tolerance (D) Homeostasis
+A: Let's think step by step.
+```
+</details>
+
+
+
 ### Exp 4: Few-shot Chain-of-Thoughts Prompting
 
 ```bash

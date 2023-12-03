@@ -1,6 +1,6 @@
 "dataset_name": "medical_genetics"
 "description": "The following are multiple choice questions (with answers) about medical\
   \ genetics. You will analyze the problem and each choice. You should end your answer by the sentence 'The answer is (X).' where you should replace 'X' in the sentence by 'A', 'B', 'C', or 'D' indicating your choice.\n\n"
-"group": "mmlu_flan_cot_zeroshot_other"
-"include": "_mmlu_flan_cot_zeroshot_template_yaml"
-"task": "mmlu_flan_cot_zeroshot_medical_genetics"
+"group": "mmlu_flan_cot_zeroshot_addoutputformat_other"
+"include": "_mmlu_flan_cot_zeroshot_addoutputformat_template_yaml"
+"task": "mmlu_flan_cot_zeroshot_addoutputformat_medical_genetics"
