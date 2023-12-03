@@ -302,8 +302,8 @@ python lm_eval/__main__.py \
 --model_args pretrained=meta-llama/Llama-2-7b-chat-hf,dtype=float16 \
 --limit 2 \
 --tasks mmlu \
---write_out
-
+--write_out \
+--verbosity DEBUG 
 # Add other flags here to debug different experiments
 ```
 
