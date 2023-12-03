@@ -52,15 +52,59 @@ text = """Before answering each question, first reason the problem and each choi
 (A) 114, 27.35 (B) 100.5, 5.23 (C) 114, 5.23 (D) The mean is 114, but there is not enough information given to determine the standard deviation.
 Reasoning: Let's think step by step."""
 
+# Zero-shot CoT with Instruction
+text = """The following are multiple choice questions (with answers) about anatomy. You will analyze the problem and each choice. You should end your answer by the sentence 'The answer is (X).' where you should replace 'X' in the sentence by 'A', 'B', 'C', or 'D' indicating your choice.
+
+Q: Which of the following terms describes the body's ability to maintain its normal state?
+(A) Anabolism (B) Catabolism (C) Tolerance (D) Homeostasis
+A: Let's think step by step."""
+
+# Task-agnostic few-shot prompting
+text = """The following are multiple choice questions (with answers) about logical fallacies.
+
+Q: When an arguer causes confusion during refutation because of real or feigned lack of an ability to engage in refutation, that arguer may have committed the fallacy of
+(A) poor sportsmanship (B) appeal to compassion (C) argument against the person (D) ignorance of refutation
+A: Let's think step by step. We refer to Wikipedia articles on logical fallacies for help. Ignorance of refutation, one of Aristotle's original list of logical fallacies in his Organon, is when someone causes confusion in an argument through real or feigned inability to engage in refutation, in order to win the argument. The answer is (D).
+
+The following are multiple choice questions (with answers) about nutrition.
+
+Q: What is the first-line drug for patients with type 2 diabetes and obesity, as of 2020?
+(A) Acarbose (B) Metformin (C) Sulphonylureas (D) Insulin
+A: Let's think step by step. We refer to Wikipedia articles on nutrition for help. Metformin (Fortamet, Glumetza, or others) is usually the first medication prescribed for type 2 diabetes, as well as obesity. It works by lowering glucose production in the liver and improving the body's sensitivity to insulin. The answer is (B).
+
+The following are multiple choice questions (with answers) about virology.
+
+Q: The median survival time to AIDS and death was established by following:
+(A) Seroprevalent HIV-infected individuals (B) Seronegatives (C) Seroconverters (D) High-risk seronegatives
+A: Let's think step by step. We refer to Wikipedia articles on virology for help. The median survival time to AIDS and death was established as a result of the development of seroconverters. The answer is (C).
+
+The following are multiple choice questions (with answers) about computer security.
+
+Q: SHA-1 has a message digest of
+(A) 160 bits (B) 512 bits (C) 628 bits (D) 820 bits
+A: Let's think step by step. Since SHA-1 is a hash function which takes an input and produces a 160-bit (20-byte) hash value, its message digest is 160 bits. The answer is (A).
+
+The following are multiple choice questions (with answers) about professional accounting.
+
+Q: An auditor traces the serial numbers on equipment to a nonissuer’s subledger. Which of the following management assertions is supported by this test?
+(A) Valuation and allocation (B) Completeness (C) Rights and obligations (D) Presentation and disclosure
+A: Let's think step by step. We refer to Wikipedia articles on accounting for help. The completeness assertion is tested by tracing supporting documents to the record entries. The answer is (B).
+
+The following are multiple choice questions (with answers) about college computer science.
+
+Q: Sometimes the object module produced by a compiler includes information (from the symbol table) mapping all source program names to their addresses. The most likely purpose of this information is
+(A) for use as input to a debugging aid (B) to increase the run-time efficiency of the program (C) for the reduction of the symbol-table space needed by the compiler (D) to tell the loader where each variable belongs
+A: Let's think step by step."""
+
 sequences = pipeline(
     text,
     do_sample=True,
     top_k=10,
     num_return_sequences=1,
     eos_token_id=tokenizer.eos_token_id,
-    max_length=4096,
+    max_length=1024,
 )
 print("======")
 for seq in sequences:
-    print(f"Result: {seq['generated_text']}")
-print('======')
+    print(f"{seq['generated_text']}")
+    print('======')
