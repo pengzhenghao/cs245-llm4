@@ -335,6 +335,14 @@ A: Let's think step by step.
 ## Few-shot Chain-of-Thoughts Prompting with Reflection
 
 
+```bash
+CUDA_VISIBLE_DEVICES=0,1,3,4,5,6,7 accelerate launch -m lm_eval \
+--model hf \
+--model_args pretrained=meta-llama/Llama-2-7b-chat-hf,dtype=float16 \
+--tasks mmlu_flan_cot_fewshot_global_reflection \
+--output_path evaluation_results/exp5_fewshot_cot_global_reflection
+```
+
 
 <details>
 <summary><b>Example Prompt:</b></summary>
