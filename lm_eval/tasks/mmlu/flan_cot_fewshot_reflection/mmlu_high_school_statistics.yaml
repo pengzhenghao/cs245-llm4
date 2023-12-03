@@ -53,6 +53,6 @@
   \ B is false because uncorrelated variables regression lines can have slope zero.\
   \ Statement C is false because correlation is symmetric in the two random variables.\
   \ The answer is (D)."
-"group": "mmlu_flan_cot_fewshot_stem"
-"include": "_mmlu_flan_cot_fewshot_template_yaml"
-"task": "mmlu_flan_cot_fewshot_high_school_statistics"
+"group": "mmlu_flan_cot_fewshot_reflection_stem"
+"include": "_mmlu_flan_cot_fewshot_reflection_template_yaml"
+"task": "mmlu_flan_cot_fewshot_reflection_high_school_statistics"

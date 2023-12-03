@@ -33,6 +33,6 @@
   \ split the spectrum into 2 lines. This will be further split into 4 lines by the\
   \ interaction with three equivalent 1H nuclei. The total number of lines is therefore\
   \ $2 \\cdot 4 = 8$. The answer is (E)."
-"group": "mmlu_flan_cot_fewshot_stem"
-"include": "_mmlu_flan_cot_fewshot_template_yaml"
-"task": "mmlu_flan_cot_fewshot_college_chemistry"
+"group": "mmlu_flan_cot_fewshot_reflection_stem"
+"include": "_mmlu_flan_cot_fewshot_reflection_template_yaml"
+"task": "mmlu_flan_cot_fewshot_reflection_college_chemistry"

@@ -56,6 +56,6 @@
   \ the human and bird forearms, which rules out (D). Humans and birds do belong to\
   \ the same clade - a group of organisms composed of a common ancestor. The answer\
   \ is (C)."
-"group": "mmlu_flan_cot_fewshot_stem"
-"include": "_mmlu_flan_cot_fewshot_template_yaml"
-"task": "mmlu_flan_cot_fewshot_college_biology"
+"group": "mmlu_flan_cot_fewshot_reflection_stem"
+"include": "_mmlu_flan_cot_fewshot_reflection_template_yaml"
+"task": "mmlu_flan_cot_fewshot_reflection_college_biology"

@@ -25,6 +25,6 @@
   \ on philosophy for help. Psychological egoism suggests that one behaves based on\
   \ what makes one feels good, hence it is a claim about human nature and how humans\
   \ are capable of behaving. The answer is (C)."
-"group": "mmlu_flan_cot_fewshot_humanities"
-"include": "_mmlu_flan_cot_fewshot_template_yaml"
-"task": "mmlu_flan_cot_fewshot_philosophy"
+"group": "mmlu_flan_cot_fewshot_reflection_humanities"
+"include": "_mmlu_flan_cot_fewshot_reflection_template_yaml"
+"task": "mmlu_flan_cot_fewshot_reflection_philosophy"

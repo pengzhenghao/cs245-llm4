@@ -35,6 +35,6 @@
   \ We refer to Wikipedia articles on us foreign policy for help. The 2008 financial\
   \ crisis damanged the international reputation of the American model of political\
   \ economy and capitalism. The answer is (A)."
-"group": "mmlu_flan_cot_fewshot_social_sciences"
-"include": "_mmlu_flan_cot_fewshot_template_yaml"
-"task": "mmlu_flan_cot_fewshot_us_foreign_policy"
+"group": "mmlu_flan_cot_fewshot_reflection_social_sciences"
+"include": "_mmlu_flan_cot_fewshot_reflection_template_yaml"
+"task": "mmlu_flan_cot_fewshot_reflection_us_foreign_policy"

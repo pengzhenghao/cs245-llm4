@@ -101,6 +101,6 @@
   \ Amendment further supports the First Amendment by establishing a due process clause.\
   \ Hence the strongest argument should be the statute is overbroad and consequently\
   \ invalid under the First and Fourteenth Amendments. The answer is (D)."
-"group": "mmlu_flan_cot_fewshot_humanities"
-"include": "_mmlu_flan_cot_fewshot_template_yaml"
-"task": "mmlu_flan_cot_fewshot_professional_law"
+"group": "mmlu_flan_cot_fewshot_reflection_humanities"
+"include": "_mmlu_flan_cot_fewshot_reflection_template_yaml"
+"task": "mmlu_flan_cot_fewshot_reflection_professional_law"

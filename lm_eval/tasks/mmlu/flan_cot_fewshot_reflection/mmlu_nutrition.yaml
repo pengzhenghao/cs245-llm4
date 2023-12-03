@@ -43,6 +43,6 @@
   \ to Wikipedia articles on nutrition for help. The risk ratio is not sufficiently\
   \ reduced that it could not be explained by random chance given the studies sample\
   \ size. The answer is (C)."
-"group": "mmlu_flan_cot_fewshot_other"
-"include": "_mmlu_flan_cot_fewshot_template_yaml"
-"task": "mmlu_flan_cot_fewshot_nutrition"
+"group": "mmlu_flan_cot_fewshot_reflection_other"
+"include": "_mmlu_flan_cot_fewshot_reflection_template_yaml"
+"task": "mmlu_flan_cot_fewshot_reflection_nutrition"

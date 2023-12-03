@@ -48,6 +48,6 @@
   Option (D): ~Dp: → p do not drive on Mars.\nOf all these options, Option (C) appears\
   \ to be the best and most meaningful interpretation of the argument “No people drive\
   \ on Mars.” The answer is (C)."
-"group": "mmlu_flan_cot_fewshot_humanities"
-"include": "_mmlu_flan_cot_fewshot_template_yaml"
-"task": "mmlu_flan_cot_fewshot_formal_logic"
+"group": "mmlu_flan_cot_fewshot_reflection_humanities"
+"include": "_mmlu_flan_cot_fewshot_reflection_template_yaml"
+"task": "mmlu_flan_cot_fewshot_reflection_formal_logic"

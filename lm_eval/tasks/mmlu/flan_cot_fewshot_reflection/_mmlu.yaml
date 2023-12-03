@@ -1,6 +1,6 @@
-group: mmlu_flan_cot_fewshot
+group: mmlu_flan_cot_fewshot_reflection
 task:
-  - mmlu_flan_cot_fewshot_stem
-  - mmlu_flan_cot_fewshot_other
-  - mmlu_flan_cot_fewshot_social_sciences
-  - mmlu_flan_cot_fewshot_humanities
+  - mmlu_flan_cot_fewshot_reflection_stem
+  - mmlu_flan_cot_fewshot_reflection_other
+  - mmlu_flan_cot_fewshot_reflection_social_sciences
+  - mmlu_flan_cot_fewshot_reflection_humanities

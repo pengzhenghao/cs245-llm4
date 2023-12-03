@@ -22,6 +22,6 @@
   \ is (A).\n\nQ: How many axles does a standard automobile have?\n(A) one (B) two\
   \ (C) four (D) eight\nA: Let's think step by step. We refer to Wikipedia for help.\
   \ Most cars have two axles to rotate the wheels.. The answer is (B)."
-"group": "mmlu_flan_cot_fewshot_other"
-"include": "_mmlu_flan_cot_fewshot_template_yaml"
-"task": "mmlu_flan_cot_fewshot_miscellaneous"
+"group": "mmlu_flan_cot_fewshot_reflection_other"
+"include": "_mmlu_flan_cot_fewshot_reflection_template_yaml"
+"task": "mmlu_flan_cot_fewshot_reflection_miscellaneous"

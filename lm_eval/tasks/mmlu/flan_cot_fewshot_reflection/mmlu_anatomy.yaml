@@ -52,6 +52,6 @@
   \ second and the third pharyngeal arches—this information is covered in the last\
   \ option (D). Therefore, we conclude that (D) must be the correct answer. The answer\
   \ is (D)."
-"group": "mmlu_flan_cot_fewshot_stem"
-"include": "_mmlu_flan_cot_fewshot_template_yaml"
-"task": "mmlu_flan_cot_fewshot_anatomy"
+"group": "mmlu_flan_cot_fewshot_reflection_stem"
+"include": "_mmlu_flan_cot_fewshot_reflection_template_yaml"
+"task": "mmlu_flan_cot_fewshot_reflection_anatomy"

@@ -37,6 +37,6 @@
   \ since his father was not royal.\nA: Let's think step by step. We refer to Wikipedia\
   \ articles on prehistory for help. Pacal built the temples as the funerary monument\
   \ to legitimize his kingship. The answer is (D)."
-"group": "mmlu_flan_cot_fewshot_humanities"
-"include": "_mmlu_flan_cot_fewshot_template_yaml"
-"task": "mmlu_flan_cot_fewshot_prehistory"
+"group": "mmlu_flan_cot_fewshot_reflection_humanities"
+"include": "_mmlu_flan_cot_fewshot_reflection_template_yaml"
+"task": "mmlu_flan_cot_fewshot_reflection_prehistory"
