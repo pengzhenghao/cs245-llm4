@@ -1,6 +1,6 @@
 "dataset_name": "professional_law"
 "description": "The following are multiple choice questions (with answers) about professional\
-  \ law.\n\n"
+  \ law. You will analyze the problem and each choice. You should end your answer by the sentence 'The answer is (X).' where you should replace 'X' in the sentence by 'A', 'B', 'C', or 'D' indicating your choice.\n\n"
 "group": "mmlu_flan_cot_zeroshot_humanities"
 "include": "_mmlu_flan_cot_zeroshot_template_yaml"
 "task": "mmlu_flan_cot_zeroshot_professional_law"
