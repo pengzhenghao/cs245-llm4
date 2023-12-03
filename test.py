@@ -96,13 +96,50 @@ Q: Sometimes the object module produced by a compiler includes information (from
 (A) for use as input to a debugging aid (B) to increase the run-time efficiency of the program (C) for the reduction of the symbol-table space needed by the compiler (D) to tell the loader where each variable belongs
 A: Let's think step by step."""
 
+# with Reflection
+text = """The following are multiple choice questions (with answers) about logical fallacies, along with a reflective pause to consider our reasoning process.
+
+Q: When an arguer causes confusion during refutation because of real or feigned lack of an ability to engage in refutation, that arguer may have committed the fallacy of
+(A) poor sportsmanship (B) appeal to compassion (C) argument against the person (D) ignorance of refutation
+A: Let's think step by step. We refer to Wikipedia articles on logical fallacies for help. Ignorance of refutation, one of Aristotle's original list of logical fallacies in his Organon, is when someone causes confusion in an argument through real or feigned inability to engage in refutation, in order to win the argument. Reflecting on this, it seems crucial to distinguish between genuine misunderstanding and strategic confusion in arguments. The answer is (D).
+
+The following are multiple choice questions (with answers) about nutrition, with a moment for reflection.
+
+Q: What is the first-line drug for patients with type 2 diabetes and obesity, as of 2020?
+(A) Acarbose (B) Metformin (C) Sulphonylureas (D) Insulin
+A: Let's think step by step. We refer to Wikipedia articles on nutrition for help. Metformin (Fortamet, Glumetza, or others) is usually the first medication prescribed for type 2 diabetes, as well as obesity. It works by lowering glucose production in the liver and improving the body's sensitivity to insulin. Reflecting on this, it's clear how crucial medication can be in managing chronic conditions, and the importance of staying updated with medical guidelines. The answer is (B).
+
+The following are multiple choice questions (with answers) about virology, with an opportunity to reflect on our learning process.
+
+Q: The median survival time to AIDS and death was established by following:
+(A) Seroprevalent HIV-infected individuals (B) Seronegatives (C) Seroconverters (D) High-risk seronegatives
+A: Let's think step by step. We refer to Wikipedia articles on virology for help. The median survival time to AIDS and death was established as a result of the development of seroconverters. Reflecting on this, we see how epidemiological studies provide vital insights into disease progression and treatment outcomes. The answer is (C).
+
+The following are multiple choice questions (with answers) about computer security, with a pause for reflection.
+
+Q: SHA-1 has a message digest of
+(A) 160 bits (B) 512 bits (C) 628 bits (D) 820 bits
+A: Let's think step by step. Since SHA-1 is a hash function which takes an input and produces a 160-bit (20-byte) hash value, its message digest is 160 bits. Pausing to reflect, we understand the relevance of hash functions in ensuring data integrity and security. The answer is (A).
+
+The following are multiple choice questions (with answers) about professional accounting, including a moment for self-reflection.
+
+Q: An auditor traces the serial numbers on equipment to a nonissuer’s subledger. Which of the following management assertions is supported by this test?
+(A) Valuation and allocation (B) Completeness (C) Rights and obligations (D) Presentation and disclosure
+A: Let's think step by step. We refer to Wikipedia articles on accounting for help. The completeness assertion is tested by tracing supporting documents to the record entries. Reflecting on this, it's evident how meticulous and detailed accounting practices help in ensuring financial transparency and accountability. The answer is (B).
+
+The following are multiple choice questions (with answers) about anatomy, with a moment for reflection.
+
+Q: Sometimes the object module produced by a compiler includes information (from the symbol table) mapping all source program names to their addresses. The most likely purpose of this information is
+(A) for use as input to a debugging aid (B) to increase the run-time efficiency of the program (C) for the reduction of the symbol-table space needed by the compiler (D) to tell the loader where each variable belongs
+A: Let's think step by step."""
+
 sequences = pipeline(
     text,
     do_sample=True,
     top_k=10,
     num_return_sequences=1,
     eos_token_id=tokenizer.eos_token_id,
-    max_length=1024,
+    max_length=4096,
 )
 print("======")
 for seq in sequences:
