@@ -806,6 +806,10 @@ class ConfigurableTask(Task):
                 doc, num_fewshot
             )
 
+        # @pengzhenghao: To avoid bug in few-shot learning, add this line code to make sure few-shot CoT is correct.
+        if not labeled_examples.endswith("\n"):
+            labeled_examples += "\n"
+
         example = self.doc_to_text(doc)
         if type(example) == str:
             return labeled_examples + example
