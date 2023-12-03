@@ -8,6 +8,8 @@ Members:
 * Zhenghao Peng
 * Haoting Ni
 * Shihao Yang
+* Yuanxuan Fang
+* Tianying Zhu
 
 
 ## Getting started
