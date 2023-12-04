@@ -1,0 +1,55 @@
+dataset_name: anatomy
+description: "The following are multiple choice questions (with answers) about logical\
+  \ fallacies.\n\nQ: When an arguer causes confusion during refutation because of\
+  \ real or feigned lack of an ability to engage in refutation, that arguer may have\
+  \ committed the fallacy of\n(A) poor sportsmanship (B) appeal to compassion (C)\
+  \ argument against the person (D) ignorance of refutation\nA: Let's think step by\
+  \ step and analyze each option:\n- (A) Poor sportsmanship: This is more about behavior\
+  \ in competition than argumentation.\n- (B) Appeal to compassion: This involves\
+  \ eliciting sympathy to win an argument, not confusion.\n- (C) Argument against\
+  \ the person: This is attacking the person, not their inability to argue.\n- (D)\
+  \ Ignorance of refutation: This is when someone can't engage in refutation, either\
+  \ genuinely or pretending. It matches the scenario described.\nThe answer is (D).\n\
+  \nThe following are multiple choice questions (with answers) about nutrition.\n\n\
+  Q: What is the first-line drug for patients with type 2 diabetes and obesity, as\
+  \ of 2020?\n(A) Acarbose (B) Metformin (C) Sulphonylureas (D) Insulin\nA: Let's\
+  \ think step by step and analyze each option:\n- (A) Acarbose: This is used for\
+  \ diabetes but isn't usually the first-line treatment.\n- (B) Metformin: Known to\
+  \ be the first-line treatment for type 2 diabetes and obesity.\n- (C) Sulphonylureas:\
+  \ Used in diabetes treatment but not typically first-line.\n- (D) Insulin: Often\
+  \ used but not usually the first choice for type 2 diabetes.\nThe answer is (B).\n\
+  \nThe following are multiple choice questions (with answers) about virology.\n\n\
+  Q: The median survival time to AIDS and death was established by following:\n(A)\
+  \ Seroprevalent HIV-infected individuals (B) Seronegatives (C) Seroconverters (D)\
+  \ High-risk seronegatives\nA: Let's think step by step and analyze each option:\n\
+  - (A) Seroprevalent HIV-infected individuals: These individuals already have HIV\
+  \ but the question is about establishing median survival time.\n- (B) Seronegatives:\
+  \ These are individuals who do not have HIV, so they would not be relevant for establishing\
+  \ survival time to AIDS.\n- (C) Seroconverters: These are individuals who have recently\
+  \ converted from being HIV-negative to HIV-positive, making them relevant for tracking\
+  \ the progression to AIDS.\n- (D) High-risk seronegatives: Like seronegatives, they\
+  \ do not have HIV and are not relevant for determining AIDS survival time.\nThe\
+  \ answer is (C).\n\nThe following are multiple choice questions (with answers) about\
+  \ computer security.\n\nQ: SHA-1 has a message digest of\n(A) 160 bits (B) 512 bits\
+  \ (C) 628 bits (D) 820 bits\nA: Let's think step by step and analyze each option:\n\
+  - (A) 160 bits: SHA-1 is designed to produce a 160-bit hash value, making this option\
+  \ correct.\n- (B) 512 bits: This is incorrect as SHA-1 produces a smaller digest\
+  \ size.\n- (C) 628 bits: This size is not standard for any well-known hash function.\n\
+  - (D) 820 bits: This is also not a standard size for hash functions like SHA-1.\n\
+  The answer is (A).\n\nThe following are multiple choice questions (with answers)\
+  \ about professional accounting.\n\nQ: An auditor traces the serial numbers on equipment\
+  \ to a nonissuer\u2019s subledger. Which of the following management assertions\
+  \ is supported by this test?\n(A) Valuation and allocation (B) Completeness (C)\
+  \ Rights and obligations (D) Presentation and disclosure\nA: Let's think step by\
+  \ step and analyze each option:\n- (A) Valuation and allocation: This involves assessing\
+  \ the value and allocation of assets, not necessarily their existence or recording.\n\
+  - (B) Completeness: Tracing serial numbers to a subledger supports the assertion\
+  \ of completeness, ensuring all assets are recorded.\n- (C) Rights and obligations:\
+  \ This relates to whether the entity has the rights to the asset and the obligations\
+  \ related to it, not about recording completeness.\n- (D) Presentation and disclosure:\
+  \ This is about the appropriate presentation and disclosure in financial statements,\
+  \ not about the recording process.\nThe answer is (B).\n\nThe following are multiple\
+  \ choice questions (with answers) about anatomy.\n\n"
+group: mmlu_flan_cot_fewshot_global_structured_stem
+include: _mmlu_flan_cot_fewshot_global_structured_template_yaml
+task: mmlu_flan_cot_fewshot_global_structured_anatomy
