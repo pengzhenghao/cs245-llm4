@@ -387,6 +387,92 @@ A: Let's think step by step.
 </details>
 
 
+## Few-shot Chain-of-Thoughts Prompting with Structured Reasoning
+
+
+
+
+```bash
+CUDA_VISIBLE_DEVICES=0,1,3,4,5,6,7 accelerate launch -m lm_eval \
+--model hf \
+--model_args pretrained=meta-llama/Llama-2-7b-chat-hf,dtype=float16 \
+--tasks mmlu_flan_cot_fewshot_global_structured \
+--output_path evaluation_results/exp6_fewshot_cot_global_structured
+```
+
+
+<details>
+<summary><b>Example Prompt:</b></summary>
+
+```plain
+The following are multiple choice questions (with answers) about logical fallacies.
+
+Q: When an arguer causes confusion during refutation because of real or feigned lack of an ability to engage in refutation, that arguer may have committed the fallacy of
+(A) poor sportsmanship (B) appeal to compassion (C) argument against the person (D) ignorance of refutation
+A: Let's think step by step and analyze each option:
+- (A) Poor sportsmanship: This is more about behavior in competition than argumentation.
+- (B) Appeal to compassion: This involves eliciting sympathy to win an argument, not confusion.
+- (C) Argument against the person: This is attacking the person, not their inability to argue.
+- (D) Ignorance of refutation: This is when someone can't engage in refutation, either genuinely or pretending. It matches the scenario described.
+The answer is (D).
+
+The following are multiple choice questions (with answers) about nutrition.
+
+Q: What is the first-line drug for patients with type 2 diabetes and obesity, as of 2020?
+(A) Acarbose (B) Metformin (C) Sulphonylureas (D) Insulin
+A: Let's think step by step and analyze each option:
+- (A) Acarbose: This is used for diabetes but isn't usually the first-line treatment.
+- (B) Metformin: Known to be the first-line treatment for type 2 diabetes and obesity.
+- (C) Sulphonylureas: Used in diabetes treatment but not typically first-line.
+- (D) Insulin: Often used but not usually the first choice for type 2 diabetes.
+The answer is (B).
+
+The following are multiple choice questions (with answers) about virology.
+
+Q: The median survival time to AIDS and death was established by following:
+(A) Seroprevalent HIV-infected individuals (B) Seronegatives (C) Seroconverters (D) High-risk seronegatives
+A: Let's think step by step and analyze each option:
+- (A) Seroprevalent HIV-infected individuals: These individuals already have HIV but the question is about establishing median survival time.
+- (B) Seronegatives: These are individuals who do not have HIV, so they would not be relevant for establishing survival time to AIDS.
+- (C) Seroconverters: These are individuals who have recently converted from being HIV-negative to HIV-positive, making them relevant for tracking the progression to AIDS.
+- (D) High-risk seronegatives: Like seronegatives, they do not have HIV and are not relevant for determining AIDS survival time.
+The answer is (C).
+
+The following are multiple choice questions (with answers) about computer security.
+
+Q: SHA-1 has a message digest of
+(A) 160 bits (B) 512 bits (C) 628 bits (D) 820 bits
+A: Let's think step by step and analyze each option:
+- (A) 160 bits: SHA-1 is designed to produce a 160-bit hash value, making this option correct.
+- (B) 512 bits: This is incorrect as SHA-1 produces a smaller digest size.
+- (C) 628 bits: This size is not standard for any well-known hash function.
+- (D) 820 bits: This is also not a standard size for hash functions like SHA-1.
+The answer is (A).
+
+The following are multiple choice questions (with answers) about professional accounting.
+
+Q: An auditor traces the serial numbers on equipment to a nonissuer’s subledger. Which of the following management assertions is supported by this test?
+(A) Valuation and allocation (B) Completeness (C) Rights and obligations (D) Presentation and disclosure
+A: Let's think step by step and analyze each option:
+- (A) Valuation and allocation: This involves assessing the value and allocation of assets, not necessarily their existence or recording.
+- (B) Completeness: Tracing serial numbers to a subledger supports the assertion of completeness, ensuring all assets are recorded.
+- (C) Rights and obligations: This relates to whether the entity has the rights to the asset and the obligations related to it, not about recording completeness.
+- (D) Presentation and disclosure: This is about the appropriate presentation and disclosure in financial statements, not about the recording process.
+The answer is (B).
+
+The following are multiple choice questions (with answers) about high school european history.
+
+Q: This question refers to the following information.
+"The Italian nation has been at last united in our own days, and we all rejoiced in its union. Yet we may be allowed to doubt whether the union was not a little too speedy and a little too thorough. It is surely carrying unity too far to wipe out all traces of the independent being, for most purposes to wipe out the very name, of such a land as Sicily. It jars on our feelings to find that, while Ireland at least forms part of the royal style of its sovereign, Sicily is no longer even a geographical expression. The island realm of Roger has sunk to be seven provinces of the kingdom on the mainland. And there is another result of Italian unity, a result in which we may rejoice without drawbacks, but which still has somewhat of sadness about it as finally ending that great phase of the history of Europe with which we have throughout been dealing. Never were ties with the past so fully snapped as when the army of Italy entered liberated Rome. Of all novelties in European history the greatest was when Rome became the centre of a dominion with acknowledged metes and bounds, the head in short of a local Italian kingdom. "Rome the capital of Italy" was a formula which might well gladden our hearts; but it was a formula which formally swept away the œcumenical position, the œcumenical traditions, of Rome&….
+But the kingdom of Italy is not an appendage to Rome; Rome is the head of the kingdom. The whole is greater than its part; Rome, by her own free will and by the free will of Italy, has become less than Italy. By becoming the willing head of an Italian kingdom she has formally cast aside her Imperial traditions as they were not cast aside when brute force made her the head of a French department."
+Edward A. Freeman, British historian and politician, The Chief Periods of European History, 1885
+The author would likely take exception to the methods of which leader during this time period in Italy?
+(A) Napoleon III (B) Giuseppe Garibaldi (C) Victor Emmanuel (D) Count Cavour
+A: Let's think step by step and analyze each option:
+```
+</details>
+
+
 ## FAQ
 
 
