@@ -473,6 +473,89 @@ A: Let's think step by step and analyze each option:
 </details>
 
 
+
+## Few-shot Chain-of-Thoughts Prompting with Structured Reasoning + Reflection
+
+
+
+
+```bash
+CUDA_VISIBLE_DEVICES=0,1,3,4,5,6,7 accelerate launch -m lm_eval \
+--model hf \
+--model_args pretrained=meta-llama/Llama-2-7b-chat-hf,dtype=float16 \
+--tasks mmlu_flan_cot_fewshot_global_structured_reflection \
+--output_path evaluation_results/exp7_fewshot_cot_global_structured_reflection
+```
+
+
+<details>
+<summary><b>Example Prompt:</b></summary>
+
+```plain
+The following are multiple choice questions (with answers) about logical fallacies.
+
+Q: When an arguer causes confusion during refutation because of real or feigned lack of an ability to engage in refutation, that arguer may have committed the fallacy of
+(A) poor sportsmanship (B) appeal to compassion (C) argument against the person (D) ignorance of refutation
+A: Let's think step by step and analyze each option:
+- (A) Poor sportsmanship: More about competitive behavior, not relevant to argumentation.
+- (B) Appeal to compassion: Involves eliciting sympathy, not related to the ability to argue.
+- (C) Argument against the person: Focuses on attacking the person, not their argument skills.
+- (D) Ignorance of refutation: Directly relates to the inability to engage in refutation, as described.
+Reflecting on these options, it's clear that option (D) is the only one that directly addresses the issue of confusion during refutation due to inability. The answer is (D).
+
+The following are multiple choice questions (with answers) about nutrition.
+
+Q: What is the first-line drug for patients with type 2 diabetes and obesity, as of 2020?
+(A) Acarbose (B) Metformin (C) Sulphonylureas (D) Insulin
+A: Let's think step by step and analyze each option:
+- (A) Acarbose: Used for diabetes, but not primarily for first-line treatment.
+- (B) Metformin: Widely recognized as the first-line treatment for type 2 diabetes and obesity.
+- (C) Sulphonylureas: Secondary treatment option, not typically first-line.
+- (D) Insulin: Usually a subsequent choice, not the first line of treatment.
+Reflecting on these options, Metformin stands out as the most appropriate first-line treatment, aligning with current medical guidelines. The answer is (B).
+
+The following are multiple choice questions (with answers) about virology.
+
+Q: The median survival time to AIDS and death was established by following:
+(A) Seroprevalent HIV-infected individuals (B) Seronegatives (C) Seroconverters (D) High-risk seronegatives
+A: Let's think step by step and analyze each option:
+- (A) Seroprevalent HIV-infected individuals: Already have HIV but not specifically relevant to median survival time.
+- (B) Seronegatives: These individuals do not have HIV, not applicable for AIDS survival time.
+- (C) Seroconverters: Relevant for tracking the progression to AIDS from the point of HIV conversion.
+- (D) High-risk seronegatives: While at risk, they do not provide direct information about AIDS survival.
+Reflecting on these options, seroconverters are most relevant for establishing the median survival time to AIDS, as they represent the group where the progression of the disease can be tracked from the point of HIV infection. The answer is (C).
+
+The following are multiple choice questions (with answers) about computer security.
+
+Q: SHA-1 has a message digest of
+(A) 160 bits (B) 512 bits (C) 628 bits (D) 820 bits
+A: Let's think step by step and analyze each option:
+- (A) 160 bits: SHA-1 is designed to produce a 160-bit hash value, making this option correct.
+- (B) 512 bits: Incorrect as SHA-1 produces a smaller digest size.
+- (C) 628 bits: Not a standard size for hash functions.
+- (D) 820 bits: Also not a standard size for hash functions like SHA-1.
+Reflecting on these options, it's evident that SHA-1 is known for its 160-bit hash value, aligning with option (A). The answer is (A).
+
+The following are multiple choice questions (with answers) about professional accounting.
+
+Q: An auditor traces the serial numbers on equipment to a nonissuer’s subledger. Which of the following management assertions is supported by this test?
+(A) Valuation and allocation (B) Completeness (C) Rights and obligations (D) Presentation and disclosure
+A: Let's think step by step and analyze each option:
+- (A) Valuation and allocation: Concerns the value and allocation of assets, not their recording.
+- (B) Completeness: Ensuring all assets are recorded, directly supported by tracing serial numbers.
+- (C) Rights and obligations: About the entity's rights to the asset and related obligations, not recording completeness.
+- (D) Presentation and disclosure: Involves financial statement presentation, not the recording process.
+Reflecting on these options, the purpose of tracing serial numbers to a subledger supports the completeness assertion, as it ensures all assets are accounted for. The answer is (B).
+
+The following are multiple choice questions (with answers) about anatomy.
+
+Q: Which of the following terms describes the body's ability to maintain its normal state?
+(A) Anabolism (B) Catabolism (C) Tolerance (D) Homeostasis
+A: Let's think step by step and analyze each option:
+```
+</details>
+
+
 ## FAQ
 
 
