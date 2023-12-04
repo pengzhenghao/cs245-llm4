@@ -1,0 +1,60 @@
+dataset_name: sociology
+description: "The following are multiple choice questions (with answers) about logical\
+  \ fallacies.\n\nQ: When an arguer causes confusion during refutation because of\
+  \ real or feigned lack of an ability to engage in refutation, that arguer may have\
+  \ committed the fallacy of\n(A) poor sportsmanship (B) appeal to compassion (C)\
+  \ argument against the person (D) ignorance of refutation\nA: Let's think step by\
+  \ step and analyze each option:\n- (A) Poor sportsmanship: More about competitive\
+  \ behavior, not relevant to argumentation.\n- (B) Appeal to compassion: Involves\
+  \ eliciting sympathy, not related to the ability to argue.\n- (C) Argument against\
+  \ the person: Focuses on attacking the person, not their argument skills.\n- (D)\
+  \ Ignorance of refutation: Directly relates to the inability to engage in refutation,\
+  \ as described.\nReflecting on these options, it's clear that option (D) is the\
+  \ only one that directly addresses the issue of confusion during refutation due\
+  \ to inability. The answer is (D).\n\nThe following are multiple choice questions\
+  \ (with answers) about nutrition.\n\nQ: What is the first-line drug for patients\
+  \ with type 2 diabetes and obesity, as of 2020?\n(A) Acarbose (B) Metformin (C)\
+  \ Sulphonylureas (D) Insulin\nA: Let's think step by step and analyze each option:\n\
+  - (A) Acarbose: Used for diabetes, but not primarily for first-line treatment.\n\
+  - (B) Metformin: Widely recognized as the first-line treatment for type 2 diabetes\
+  \ and obesity.\n- (C) Sulphonylureas: Secondary treatment option, not typically\
+  \ first-line.\n- (D) Insulin: Usually a subsequent choice, not the first line of\
+  \ treatment.\nReflecting on these options, Metformin stands out as the most appropriate\
+  \ first-line treatment, aligning with current medical guidelines. The answer is\
+  \ (B).\n\nThe following are multiple choice questions (with answers) about virology.\n\
+  \nQ: The median survival time to AIDS and death was established by following:\n\
+  (A) Seroprevalent HIV-infected individuals (B) Seronegatives (C) Seroconverters\
+  \ (D) High-risk seronegatives\nA: Let's think step by step and analyze each option:\n\
+  - (A) Seroprevalent HIV-infected individuals: Already have HIV but not specifically\
+  \ relevant to median survival time.\n- (B) Seronegatives: These individuals do not\
+  \ have HIV, not applicable for AIDS survival time.\n- (C) Seroconverters: Relevant\
+  \ for tracking the progression to AIDS from the point of HIV conversion.\n- (D)\
+  \ High-risk seronegatives: While at risk, they do not provide direct information\
+  \ about AIDS survival.\nReflecting on these options, seroconverters are most relevant\
+  \ for establishing the median survival time to AIDS, as they represent the group\
+  \ where the progression of the disease can be tracked from the point of HIV infection.\
+  \ The answer is (C).\n\nThe following are multiple choice questions (with answers)\
+  \ about computer security.\n\nQ: SHA-1 has a message digest of\n(A) 160 bits (B)\
+  \ 512 bits (C) 628 bits (D) 820 bits\nA: Let's think step by step and analyze each\
+  \ option:\n- (A) 160 bits: SHA-1 is designed to produce a 160-bit hash value, making\
+  \ this option correct.\n- (B) 512 bits: Incorrect as SHA-1 produces a smaller digest\
+  \ size.\n- (C) 628 bits: Not a standard size for hash functions.\n- (D) 820 bits:\
+  \ Also not a standard size for hash functions like SHA-1.\nReflecting on these options,\
+  \ it's evident that SHA-1 is known for its 160-bit hash value, aligning with option\
+  \ (A). The answer is (A).\n\nThe following are multiple choice questions (with answers)\
+  \ about professional accounting.\n\nQ: An auditor traces the serial numbers on equipment\
+  \ to a nonissuer\u2019s subledger. Which of the following management assertions\
+  \ is supported by this test?\n(A) Valuation and allocation (B) Completeness (C)\
+  \ Rights and obligations (D) Presentation and disclosure\nA: Let's think step by\
+  \ step and analyze each option:\n- (A) Valuation and allocation: Concerns the value\
+  \ and allocation of assets, not their recording.\n- (B) Completeness: Ensuring all\
+  \ assets are recorded, directly supported by tracing serial numbers.\n- (C) Rights\
+  \ and obligations: About the entity's rights to the asset and related obligations,\
+  \ not recording completeness.\n- (D) Presentation and disclosure: Involves financial\
+  \ statement presentation, not the recording process.\nReflecting on these options,\
+  \ the purpose of tracing serial numbers to a subledger supports the completeness\
+  \ assertion, as it ensures all assets are accounted for. The answer is (B).\n\n\
+  The following are multiple choice questions (with answers) about sociology.\n\n"
+group: mmlu_flan_cot_fewshot_global_structured_reflection_social_sciences
+include: _mmlu_flan_cot_fewshot_global_structured_reflection_template_yaml
+task: mmlu_flan_cot_fewshot_global_structured_reflection_sociology

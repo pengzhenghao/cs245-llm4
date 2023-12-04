@@ -1,0 +1,6 @@
+group: mmlu_flan_cot_fewshot_global_structured_reflection
+task:
+  - mmlu_flan_cot_fewshot_global_structured_reflection_stem
+  - mmlu_flan_cot_fewshot_global_structured_reflection_other
+  - mmlu_flan_cot_fewshot_global_structured_reflection_social_sciences
+  - mmlu_flan_cot_fewshot_global_structured_reflection_humanities
