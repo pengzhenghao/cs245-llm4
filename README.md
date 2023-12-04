@@ -191,6 +191,17 @@ accelerate launch -m lm_eval \
 --output_path evaluation_results/exp2_taskagnostic_fewshot
 ```
 
+
+```bash
+accelerate launch -m lm_eval \
+--model hf \
+--model_args pretrained=meta-llama/Llama-2-7b-chat-hf,dtype=float16 \
+--tasks mmlu_flan_cot_fewshot_global_10shot \
+--output_path evaluation_results/exp2_taskagnostic_fewshot_10shot
+```
+
+
+
 <details>
 <summary><b>Example Prompt:</b></summary>
 
