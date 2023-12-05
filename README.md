@@ -104,13 +104,20 @@ Answer:
 
 
 
-### Exp 2: Few-shot (k=3, 5) Prompting
+### Exp 2: Few-shot (k=1, 3, 5) Prompting
 
 
 **Features:**
-* 3-shot and 5-shot prompting
+* 1-shot, 3-shot and 5-shot prompting
 
 ```bash
+accelerate launch -m lm_eval \
+--model hf \
+--model_args pretrained=meta-llama/Llama-2-7b-chat-hf,dtype=float16 \
+--tasks mmlu \
+--num_fewshot 1 \
+--output_path evaluation_results/exp2_1shot
+
 accelerate launch -m lm_eval \
 --model hf \
 --model_args pretrained=meta-llama/Llama-2-7b-chat-hf,dtype=float16 \
@@ -180,26 +187,131 @@ Answer:
 </details>
 
 
-### Exp 2B: Task-agnostic Few-shot Prompting
+### Exp 3: Zero-shot Chain-of-Thoughts Prompting
+
 
 **Features:**
-* 3-shot and 5-shot prompting
+* Zero-shot prompting, but ask the model to "think step by step".
+* This experiment is expected to fail as the model doesn't output the expected format.
+
+
+```bash
+accelerate launch -m lm_eval \
+--model hf \
+--model_args pretrained=meta-llama/Llama-2-7b-chat-hf,dtype=float16 \
+--tasks mmlu_flan_cot_zeroshot \
+--output_path evaluation_results/exp3_0shot_cot
+```
+
+
+<details>
+<summary><b>Example Prompt:</b></summary>
+
+```plain
+The following are multiple choice questions (with answers) about conceptual physics.
+
+Q: A real image can be cast on a screen by a
+(A) converging lens (B) diverging lens (C) Either of these (D) Neither of these
+A: Let's think step by step.
+```
+</details>
+
+
+
+
+
+### Exp 4: Zero-shot Chain-of-Thoughts Prompting with Additional Instruction
+
+
+**Features:**
+* Zero-shot prompting, asking the model to "think step by step".
+* We additionally ask the model to predict the expected output, e.g. "The answer is (X)."
+
+```bash
+accelerate launch -m lm_eval \
+--model hf \
+--model_args pretrained=meta-llama/Llama-2-7b-chat-hf,dtype=float16 \
+--tasks mmlu_flan_cot_zeroshot_addoutputformat \
+--output_path evaluation_results/exp4_0shot_cot_addoutputformat
+```
+
+
+<details>
+<summary><b>Example Prompt:</b></summary>
+
+```plain
+The following are multiple choice questions (with answers) about anatomy. You will analyze the problem and each choice. You should end your answer by the sentence 'The answer is (X).' where you should replace 'X' in the sentence by 'A', 'B', 'C', or 'D' indicating your choice.
+
+Q: Which of the following terms describes the body's ability to maintain its normal state?
+(A) Anabolism (B) Catabolism (C) Tolerance (D) Homeostasis
+A: Let's think step by step.
+```
+</details>
+
+
+
+### Exp 5: Few-shot Chain-of-Thoughts Prompting
+
+
+**Features:**
+* Few-shot prompting asking the model to "think step by step".
+
+
+```bash
+accelerate launch -m lm_eval \
+--model hf \
+--model_args pretrained=meta-llama/Llama-2-7b-chat-hf,dtype=float16 \
+--tasks mmlu_flan_cot_fewshot \
+--output_path evaluation_results/exp5_fewshot_cot
+```
+
+
+<details>
+<summary><b>Example Prompt:</b></summary>
+
+```plain
+The following are multiple choice questions (with answers) about high school statistics.
+
+Q: A new smartwatch is manufactured in one part of a factory, then secured for shipping in another, independent part of the factory. The weight of the smartwatch has a mean of 62 grams and a standard deviation of 1.0 grams. The weight of the packaging (box, user's guide, bubble wrap, etc.) has a mean of 456 grams and a standard deviation of 6 grams. Together, the distribution of the weight of the smartwatch and its packaging would have the following mean and standard deviation:
+(A) Mean 518 grams; standard deviation 7.0 grams (B) Mean 518 grams; standard deviation 3.5 grams (C) Mean 518 grams; standard deviation 6.1 grams (D) Mean 394 grams; standard deviation 6.1 grams
+A: Let's think step by step. Since the weight of the watch and the weight of the packaging are independent random variables, the mean and variance of their sum is equal to the sum of their individual means and variances. So the mean is 62 + 456 = 518 grams, and the variances is 1.0^2 + 6.0^2 = 37, leading to a standard deviation of 6.1 grams. The answer is (C).
+
+Q: After a frost warning was issued, the owner of a large orange grove asked his workers to spray all his trees with water. The water was supposed to freeze and form a protective covering of ice around the orange blossom. Nevertheless, the owner suspected that some trees suffered considerable damage due to the frost. To estimate the proportion of trees that suffered more than 50 percent damage due to the frost, he took a random sample of 100 trees from his grove. What is the response variable in this experiment?
+(A) The proportion of trees that suffered more than 50 percent damage due to frost. (B) The number of trees affected by the frost. (C) The number of trees sampled from the grove. (D) For each sampled tree, whether it suffered more than 50 percent damage or at most 50 percent damage.
+A: Let's think step by step. In this experiment, the response variable is what is measured. For each tree, what is measured is whether or not it suffered more than 50 percent damage due to the frost. The answer is (D).
+
+Q: Suppose X and Y are random variables with E(X) = 37, var(X) = 5, E(Y) = 62, and var(Y) = 12. What are the expected value and variance of the random variable X + Y?
+(A) E(X + Y) = 99, var(X + Y) = 8.5 (B) E(X + Y) = 99, var(X + Y) = 13 (C) E(X + Y) = 99, var(X + Y) = 17 (D) There is insufficient information to answer this question.
+A: Let's think step by step. While means of sums of random variables add (regardless of whether the variables are independent) in order to determine the variance of a sum of random variables, we need to know not just their individual variances but the covariance of the two variables, which is not given in this problem. The answer is (D).
+
+Q: Which of the following sets has the smallest standard deviation? Which has the largest?
+I: {1,2,3}
+II: {-10,10}
+III: {100}
+(A) I, II (B) II, III (C) III, I (D) III, II
+A: Let's think step by step. The variance of distribution I is the expected squared deviation from its mean (which is 2), so the variance is 2/3 . The variance of distribution II is 10^2 (because both elements are 10 away from the mean of zero). The variance of distribution III is 0, since it has a single entry. So distribution III has the smallest standard deviation and distribution II has the largest. The answer is (D).
+
+Q: Which of the following is a correct statement about correlation?
+(A) If the slope of the regression line is exactly 1, then the correlation is exactly 1. (B) If the correlation is 0, then the slope of the regression line is undefined. (C) Switching which variable is called x and which is called y changes the sign of the correlation. (D) The correlation r is equal to the slope of the regression line when z-scores for the y-variable are plotted against z-scores for the x-variable.
+A: Let's think step by step. Statement A is false because the slope of the regression line being exactly 1 can occur even when the two variables are not perfectly correlated. Statement B is false because uncorrelated variables regression lines can have slope zero. Statement C is false because correlation is symmetric in the two random variables. The answer is (D).Q: What are the mean and standard deviation of a binomial experiment that occurs with probability of success 0.76 and is repeated 150 times?
+(A) 114, 27.35 (B) 100.5, 5.23 (C) 114, 5.23 (D) The mean is 114, but there is not enough information given to determine the standard deviation.
+A: Let's think step by step.
+```
+</details>
+
+
+### Exp 6: Task-agnostic Few-shot Prompting
+
+**Features:**
+* Sample 5 subtasks and concatenate the first Q&CoT&A from each of the subtasks.
+* Use the same prompt for all subtasks.
 
 ```bash
 accelerate launch -m lm_eval \
 --model hf \
 --model_args pretrained=meta-llama/Llama-2-7b-chat-hf,dtype=float16 \
 --tasks mmlu_flan_cot_fewshot_global \
---output_path evaluation_results/exp2_taskagnostic_fewshot
-```
-
-
-```bash
-accelerate launch -m lm_eval \
---model hf \
---model_args pretrained=meta-llama/Llama-2-7b-chat-hf,dtype=float16 \
---tasks mmlu_flan_cot_fewshot_global_10shot \
---output_path evaluation_results/exp2_taskagnostic_fewshot_10shot
+--output_path evaluation_results/exp6_taskagnostic_fewshot
 ```
 
 
@@ -247,105 +359,15 @@ A: Let's think step by step.
 </details>
 
 
-### Exp 3: Zero-shot Chain-of-Thoughts Prompting
-
-```bash
-accelerate launch -m lm_eval \
---model hf \
---model_args pretrained=meta-llama/Llama-2-7b-chat-hf,dtype=float16 \
---tasks mmlu_flan_cot_zeroshot \
---output_path evaluation_results/exp3_0shot_cot
-```
-
-
-<details>
-<summary><b>Example Prompt:</b></summary>
-
-```plain
-The following are multiple choice questions (with answers) about conceptual physics.
-
-Q: A real image can be cast on a screen by a
-(A) converging lens (B) diverging lens (C) Either of these (D) Neither of these
-A: Let's think step by step.
-```
-</details>
 
 
 
 
-
-### Exp 3B: Zero-shot Chain-of-Thoughts Prompting with Additional Instruction
-
-```bash
-accelerate launch -m lm_eval \
---model hf \
---model_args pretrained=meta-llama/Llama-2-7b-chat-hf,dtype=float16 \
---tasks mmlu_flan_cot_zeroshot_addoutputformat \
---output_path evaluation_results/exp3_0shot_cot_addoutputformat
-```
+### Exp 7: Few-shot Chain-of-Thoughts Prompting with Reflection
 
 
-<details>
-<summary><b>Example Prompt:</b></summary>
-
-```plain
-The following are multiple choice questions (with answers) about anatomy. You will analyze the problem and each choice. You should end your answer by the sentence 'The answer is (X).' where you should replace 'X' in the sentence by 'A', 'B', 'C', or 'D' indicating your choice.
-
-Q: Which of the following terms describes the body's ability to maintain its normal state?
-(A) Anabolism (B) Catabolism (C) Tolerance (D) Homeostasis
-A: Let's think step by step.
-```
-</details>
-
-
-
-### Exp 4: Few-shot Chain-of-Thoughts Prompting
-
-```bash
-accelerate launch -m lm_eval \
---model hf \
---model_args pretrained=meta-llama/Llama-2-7b-chat-hf,dtype=float16 \
---tasks mmlu_flan_cot_fewshot \
---output_path evaluation_results/exp4_fewshot_cot
-```
-
-
-<details>
-<summary><b>Example Prompt:</b></summary>
-
-```plain
-The following are multiple choice questions (with answers) about high school statistics.
-
-Q: A new smartwatch is manufactured in one part of a factory, then secured for shipping in another, independent part of the factory. The weight of the smartwatch has a mean of 62 grams and a standard deviation of 1.0 grams. The weight of the packaging (box, user's guide, bubble wrap, etc.) has a mean of 456 grams and a standard deviation of 6 grams. Together, the distribution of the weight of the smartwatch and its packaging would have the following mean and standard deviation:
-(A) Mean 518 grams; standard deviation 7.0 grams (B) Mean 518 grams; standard deviation 3.5 grams (C) Mean 518 grams; standard deviation 6.1 grams (D) Mean 394 grams; standard deviation 6.1 grams
-A: Let's think step by step. Since the weight of the watch and the weight of the packaging are independent random variables, the mean and variance of their sum is equal to the sum of their individual means and variances. So the mean is 62 + 456 = 518 grams, and the variances is 1.0^2 + 6.0^2 = 37, leading to a standard deviation of 6.1 grams. The answer is (C).
-
-Q: After a frost warning was issued, the owner of a large orange grove asked his workers to spray all his trees with water. The water was supposed to freeze and form a protective covering of ice around the orange blossom. Nevertheless, the owner suspected that some trees suffered considerable damage due to the frost. To estimate the proportion of trees that suffered more than 50 percent damage due to the frost, he took a random sample of 100 trees from his grove. What is the response variable in this experiment?
-(A) The proportion of trees that suffered more than 50 percent damage due to frost. (B) The number of trees affected by the frost. (C) The number of trees sampled from the grove. (D) For each sampled tree, whether it suffered more than 50 percent damage or at most 50 percent damage.
-A: Let's think step by step. In this experiment, the response variable is what is measured. For each tree, what is measured is whether or not it suffered more than 50 percent damage due to the frost. The answer is (D).
-
-Q: Suppose X and Y are random variables with E(X) = 37, var(X) = 5, E(Y) = 62, and var(Y) = 12. What are the expected value and variance of the random variable X + Y?
-(A) E(X + Y) = 99, var(X + Y) = 8.5 (B) E(X + Y) = 99, var(X + Y) = 13 (C) E(X + Y) = 99, var(X + Y) = 17 (D) There is insufficient information to answer this question.
-A: Let's think step by step. While means of sums of random variables add (regardless of whether the variables are independent) in order to determine the variance of a sum of random variables, we need to know not just their individual variances but the covariance of the two variables, which is not given in this problem. The answer is (D).
-
-Q: Which of the following sets has the smallest standard deviation? Which has the largest?
-I: {1,2,3}
-II: {-10,10}
-III: {100}
-(A) I, II (B) II, III (C) III, I (D) III, II
-A: Let's think step by step. The variance of distribution I is the expected squared deviation from its mean (which is 2), so the variance is 2/3 . The variance of distribution II is 10^2 (because both elements are 10 away from the mean of zero). The variance of distribution III is 0, since it has a single entry. So distribution III has the smallest standard deviation and distribution II has the largest. The answer is (D).
-
-Q: Which of the following is a correct statement about correlation?
-(A) If the slope of the regression line is exactly 1, then the correlation is exactly 1. (B) If the correlation is 0, then the slope of the regression line is undefined. (C) Switching which variable is called x and which is called y changes the sign of the correlation. (D) The correlation r is equal to the slope of the regression line when z-scores for the y-variable are plotted against z-scores for the x-variable.
-A: Let's think step by step. Statement A is false because the slope of the regression line being exactly 1 can occur even when the two variables are not perfectly correlated. Statement B is false because uncorrelated variables regression lines can have slope zero. Statement C is false because correlation is symmetric in the two random variables. The answer is (D).Q: What are the mean and standard deviation of a binomial experiment that occurs with probability of success 0.76 and is repeated 150 times?
-(A) 114, 27.35 (B) 100.5, 5.23 (C) 114, 5.23 (D) The mean is 114, but there is not enough information given to determine the standard deviation.
-A: Let's think step by step.
-```
-</details>
-
-
-
-## Few-shot Chain-of-Thoughts Prompting with Reflection
+**Features:**
+* Compared to Exp 6, additionally ask the model to reflect it's reasoning.
 
 
 ```bash
@@ -353,7 +375,7 @@ CUDA_VISIBLE_DEVICES=0,1,3,4,5,6,7 accelerate launch -m lm_eval \
 --model hf \
 --model_args pretrained=meta-llama/Llama-2-7b-chat-hf,dtype=float16 \
 --tasks mmlu_flan_cot_fewshot_global_reflection \
---output_path evaluation_results/exp5_fewshot_cot_global_reflection
+--output_path evaluation_results/exp7_fewshot_cot_global_reflection
 ```
 
 
@@ -400,9 +422,13 @@ A: Let's think step by step.
 </details>
 
 
-## Few-shot Chain-of-Thoughts Prompting with Structured Reasoning
+### Exp 8: Few-shot Chain-of-Thoughts Prompting with Per-choice Reasoning
 
 
+
+
+**Features:**
+* Compared to Exp 6, additionally ask the model to analyze each choice. 
 
 
 ```bash
@@ -410,7 +436,7 @@ CUDA_VISIBLE_DEVICES=0,1,3,4,5,6,7 accelerate launch -m lm_eval \
 --model hf \
 --model_args pretrained=meta-llama/Llama-2-7b-chat-hf,dtype=float16 \
 --tasks mmlu_flan_cot_fewshot_global_structured \
---output_path evaluation_results/exp6_fewshot_cot_global_structured
+--output_path evaluation_results/exp8_fewshot_cot_taskagnositic_perchoicereasoning
 ```
 
 
@@ -487,9 +513,12 @@ A: Let's think step by step and analyze each option:
 
 
 
-## Few-shot Chain-of-Thoughts Prompting with Structured Reasoning + Reflection
+### Exp 9: Few-shot Chain-of-Thoughts Prompting with Per-choice Reasoning and with Self-reflection
 
 
+
+**Features:**
+* Add per-choice reasoning and self-inflection together with the task-agnostic few-shot examples.
 
 
 ```bash
